@@ -12,6 +12,10 @@
         table, th, td {
             border: solid 1px #000;
         }
+        td {
+            text-align: center;
+            padding: 0 20px;
+        }
     </style>
 </head>
 
@@ -44,37 +48,52 @@
 
             if (! empty($emailData)) {
                 ?>
-        <table>
-            <tr>
-                <th>From</th>
-                <th>Subject</th>
-                <th>Date</th>
-            </tr>
-            <?php
-                foreach ($emailData as $emailIdent) {
-                    
-                    $overview = imap_fetch_overview($connection, $emailIdent, 0);
-                    $message = imap_fetchbody($connection, $emailIdent, '1.1');
-                    $messageExcerpt = substr($message, 0, 150);
-                    $partialMessage = trim(quoted_printable_decode($messageExcerpt)); 
-                    $date = date("d F, Y", strtotime($overview[0]->date));
-                    ?>
-            <tr>
-                <td>
-                    <span class="column"><?php echo $overview[0]->from . "\n"; ?></span>
-                </td>
-                <td class="content-div"><span class="column">
-                    <?php echo $overview[0]->subject; ?> - <?php echo $partialMessage; ?>
-                    </span><span class="date">
-                    <?php echo $date; ?>
-                    </span>
-                </td>
-            </tr>
+
+            <table>
+                <tr>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Content</th>
+                </tr>
+                <?php
+                    $total = 0;
+
+                    foreach ($emailData as $emailIdent) {
+                        // imap_fetch_body
+                        // ()Root Message Part (multipart/related)
+                        // (1) The text parts of the message (multipart/alternative)
+                        // (1.1) Plain text version (text/plain)
+                        // (1.2) HTML version (text/html)
+                        // (2) The background stationary (image/gif)
+                        $overview = imap_fetch_overview($connection, $emailIdent, 0);
+                        $message = imap_fetchbody($connection, $emailIdent, '1');
+                        $messageExcerpt = substr($message, 0, 150);
+                        $date = date('d F, Y, H:i:s', strtotime($overview[0]->date));
+                        $emailContent = quoted_printable_decode($messageExcerpt); 
+                        $int = (int) filter_var($emailContent, FILTER_SANITIZE_NUMBER_INT);
+                        $total += $int;
+                        // $trimmed = substr($emailContent, 4, -1); 
+                        // echo $emailIdent . '- ' . $trimmed  . '<br>';
+                ?>
+                <tr>
+                    <td class="content-div">
+                            <?php echo $overview[0]->subject; ?>
+                    </td>
+                    <td>
+                        <?php echo $date; ?>
+                    </td>
+                    <td>
+                        <?php echo $int;?>
+                    </td>
+                </tr>
             <?php
                 } // End foreach
                 ?>
         </table>
         <?php
+            
+            echo '<h2>Total sumado: ' . $total . '</h2>';
+
             } // end if
             
             imap_close($connection);
