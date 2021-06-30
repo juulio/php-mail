@@ -1,28 +1,20 @@
 # 2021 PHP Mail - OUT CR
 
-## Steps to setup a localhost environment
+Esta aplicación corre en una terminal.
+Una vez que el ambiente local esté listo, usar el comando php en una terminal:
+```php mail.php```
 
-1. Install [Virutal Box](https://www.virtualbox.org/wiki/Downloads)
+## Pasos para settear ambiente local en Ubuntu:
 
-2. Install [Vagrant](https://www.vagrantup.com)
+1. En una terminal, instalar php5-imap ```sudo apt-get install php5-imap```
+Podría variar según la versión de php.
 
-3. Clone this repository to the desired folder.
+2. ```sudo phpenmod imap```
 
-4. To run the project using Vagrant, you need to install the ubuntu/trusty64 box. So the first time you run `vagrant up` it'll show a lot of things on the terminal. This will only happen once.
-    ```sh
-    vagrant up
-    ```
-
-5. To log into the local Vagrant machine using ssh, type
-    ```sh
-    vagrant ssh
-    ```
+3. Reiniciar apache para que los cambios tengan efecto ```sudo service apache2 restart```
 
 
-6. Inside Vagrant machine (SSH), go to the project folder 
-    ```sh
-    cd /var/www
-    ```
+## Pasos para settear ambiente local en Mac OSX
+1. En una terminal, instalar php-ext  ```brew tap kabel/php-ext```
 
-7. On a browser, test `http://localhost:8080 `  
- 
+2. Instalar php-imap ```brew install php-imap```
